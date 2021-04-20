@@ -22,7 +22,10 @@ public class ProgramaPrincipal {
 				produtos.add(produtoController.cadastrarProduto());
 				break;
 			case 2:
-				produtoController.consultarProdutos(produtos);
+				produtoController.listarProdutos(produtos);
+				break;
+			case 3:
+				produtoController.editarProduto(produtos);
 				break;
 			case 6:
 				sair = true;
