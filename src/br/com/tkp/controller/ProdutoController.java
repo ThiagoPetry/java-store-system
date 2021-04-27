@@ -20,7 +20,7 @@ public class ProdutoController {
 
 	public void menu() {
 		System.out.print(
-				"\n======== MENU ========\n1 - Cadastrar itens\n2 - Listar estoque\n3 - Editar item\n4 - Remover item\n5 - Realizar venda\n6 - Sair\n======================");
+				"\n======== MENU ========\n1 - Cadastrar itens\n2 - Listar estoque\n3 - Editar item\n4 - Remover item\n5 - Realizar venda\n6 - Carrinho\n7 - Sair\n======================");
 	}
 
 	public ProdutoModel cadastrarProduto() {
@@ -39,69 +39,162 @@ public class ProdutoController {
 	}
 
 	public List<ProdutoModel> listarProdutos(List<ProdutoModel> produtos) {
-		System.out.println("\n==== Produtos Cadastrados ====\n");
-		System.out.printf("| %10s | %8s | %4s | %9s |\n", "Produto", "Preço", "Qtd", "R$ total");
+		System.out.println("\n============ Produtos Cadastrados ============");
+		System.out.printf("| %2s | %8s | %8s | %4s | %9s |\n", "ID", "Produto", "Preço", "Qtd", "R$ total");
 
-		produtos.forEach(produto -> {
-			System.out.printf("| %8s | %8s | %4s | %9s |\n", produto.getNomeProd(), produto.getPrecoProd(),
-					produto.getQtdProd(), produto.getSaldoEstoque());
-		});
+		// produtos.forEach(produto -> {
+		// System.out.printf("| %8s | %8s | %4s | %9s |\n", produto.getNomeProd(),
+		// produto.getPrecoProd(),
+		// produto.getQtdProd(), produto.getSaldoEstoque());
+		// });
+
+		for (int x = 0; x < produtos.size(); x++) {
+			System.out.printf("| %2s | %8s | %8s | %4s | %9s |\n", x + 1, produtos.get(x).getNomeProd(),
+					produtos.get(x).getPrecoProd(), produtos.get(x).getQtdProd(), produtos.get(x).getSaldoEstoque());
+		}
 		return produtos;
 	}
-	
+
 	public ProdutoModel editarProduto(List<ProdutoModel> produtos) {
 		ProdutoModel produto = new ProdutoModel();
 		int idDoProduto, indexDoCampo;
+
+		if (produtos.size() <= 0) {
+			System.out.println("\nNão existe nenhum produto cadastrado.");
+			return null;
+		}
 		
-		System.out.println("\n==== Editar produto ====\n");
+		listarProdutos(produtos);
+
+		System.out.println("\n============= Editar produto =============\n");
 		System.out.print("Informe o ID do produto: ");
-		idDoProduto = tec.nextInt();
-		
+		idDoProduto = tec.nextInt() - 1;
+
+		if (idDoProduto >= produtos.size()) {
+			System.out.println("\nEste produto não existe.");
+			return null;
+		}
+
 		System.out.print("\n1 - Nome do produto\n2 - Preço do produto\n3 - Quantidade do produto");
 		System.out.print("\nInforme o campo que deseja editar: ");
 		indexDoCampo = tec.nextInt();
-		
+
 		switch (indexDoCampo) {
 		case 1:
 			System.out.print("Informe o novo nome do produto: ");
 			produto.setNomeProd(tec.next());
-			
+
 			produto.setPrecoProd(produtos.get(idDoProduto).getPrecoProd());
 			produto.setQtdProd(produtos.get(idDoProduto).getQtdProd());
 			produto.setSaldoEstoque(produtos.get(idDoProduto).getSaldoEstoque());
-			
+
 			produtos.set(idDoProduto, produto);
 			break;
 		case 2:
 			System.out.print("Informe o novo preço do produto: ");
 			produto.setPrecoProd(tec.nextDouble());
-			
+
 			produto.setNomeProd(produtos.get(idDoProduto).getNomeProd());
 			produto.setQtdProd(produtos.get(idDoProduto).getQtdProd());
-			produto.setSaldoEstoque(produtos.get(idDoProduto).getSaldoEstoque());
-			
+			produto.setSaldoEstoque(produtos.get(idDoProduto).getQtdProd() * produto.getPrecoProd());
+
 			produtos.set(idDoProduto, produto);
 			break;
 		case 3:
 			System.out.print("Informe a nova quantidade do produto: ");
-			produto.setNomeProd(tec.next());
-			
+			produto.setQtdProd(tec.nextInt());
+
 			produto.setPrecoProd(produtos.get(idDoProduto).getPrecoProd());
-			produto.setQtdProd(produtos.get(idDoProduto).getQtdProd());
-			produto.setSaldoEstoque(produtos.get(idDoProduto).getSaldoEstoque());
-			
+			produto.setNomeProd(produtos.get(idDoProduto).getNomeProd());
+			produto.setSaldoEstoque(produtos.get(idDoProduto).getPrecoProd() * produto.getQtdProd());
+
 			produtos.set(idDoProduto, produto);
 			break;
 
 		default:
+			System.out.println("\nCampo inválido.");
 			break;
 		}
-		
 		return null;
 	}
 	
+	public void removerProduto(List<ProdutoModel> produtos) {
+		System.out.println("\n============= Remover produto ==============");
+		
+		if(produtos.size() <= 0) {
+			System.out.print("Não existe nenhum produto cadastrado.\n");
+			return;
+		}
+
+		listarProdutos(produtos);		
+		
+		System.out.print("\nInforme o ID do produto a ser removido: ");
+		int idDoProduto = tec.nextInt();
+		
+		if(idDoProduto >= produtos.size()) {
+			System.out.println("\nEste produto não existe.");
+			return;
+		}
+		
+		produtos.remove(idDoProduto - 1);
+		System.out.println("Produto removido com sucesso!");
+	}
 	
+	public void realizarVenda(List<ProdutoModel> produtos, List<ProdutoModel> produtosCarrinho) {
+		System.out.println("\n--> Realizar venda");
+		
+		if(produtos.size() <= 0) {
+			System.out.print("\nNão existe nenhum produto cadastrado.\n");
+			return;
+		}
+		
+		ProdutoModel produtoC = new ProdutoModel();
+		listarProdutos(produtos);
+		
+		int idDoProduto, qtdDoProduto, total;
+		
+		System.out.print("\nInforme o ID do produto a ser comprado: ");
+		idDoProduto = tec.nextInt() - 1;
+		
+		if(idDoProduto > produtos.size()) {
+			System.out.println("\nEste produto não existe.");
+			return;
+		}
+		
+		System.out.print("\nInforme a quantidade: ");
+		qtdDoProduto = tec.nextInt();
+		
+		if(qtdDoProduto > produtos.get(idDoProduto).getQtdProd()) {
+			System.out.print("\nEstoque insuficiente!");
+			return;
+		}
+		
+		produtoC.setNomeProd(produtos.get(idDoProduto).getNomeProd());
+		produtoC.setQtdProd(qtdDoProduto);
+		produtoC.setPrecoProd(produtos.get(idDoProduto).getPrecoProd());
+		produtoC.setSaldoEstoque(produtos.get(idDoProduto).getPrecoProd() * qtdDoProduto);
+		produtosCarrinho.add(produtoC);
+		produtos.get(idDoProduto).setQtdProd(produtos.get(idDoProduto).getQtdProd() - qtdDoProduto);
+		
+	}
+	
+	public void carrinho(List<ProdutoModel> produtosCarrinho) {
+		System.out.println("\n======== Carrinho ========");
+		System.out.printf("| %4s | %6s | %6s |\n", "Qtd", "Valor", "Total");
+
+		for (int x = 0; x < produtosCarrinho.size(); x++) {
+			System.out.printf("| %4s | %6s | %6s |\n", produtosCarrinho.get(x).getQtdProd(), produtosCarrinho.get(x).getPrecoProd(), produtosCarrinho.get(x).getSaldoEstoque());
+		}		
+	}
 }
+
+
+
+
+
+
+
+
 
 
 
