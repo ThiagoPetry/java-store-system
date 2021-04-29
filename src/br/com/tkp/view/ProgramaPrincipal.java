@@ -2,15 +2,20 @@ package br.com.tkp.view;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import br.com.tkp.controller.CarrinhoController;
 import br.com.tkp.controller.ProdutoController;
+import br.com.tkp.model.CarrinhoModel;
 import br.com.tkp.model.ProdutoModel;
 
 public class ProgramaPrincipal {
 
 	public static void main(String[] args) {
 		List<ProdutoModel> produtos = new ArrayList<ProdutoModel>();
-		List<ProdutoModel> produtosCarrinho = new ArrayList<ProdutoModel>();
+		List<CarrinhoModel> produtosCarrinho = new ArrayList<CarrinhoModel>();
+		
 		ProdutoController produtoController = new ProdutoController();
+		CarrinhoController carrinhoController = new CarrinhoController();
 		
 		boolean sair = false;
 		
@@ -35,7 +40,7 @@ public class ProgramaPrincipal {
 				produtoController.realizarVenda(produtos, produtosCarrinho);
 				break;
 			case 6:
-				produtoController.carrinho(produtosCarrinho);
+				carrinhoController.menuCarrinho(produtos, produtosCarrinho);
 				break;
 			case 7:
 				sair = true;
