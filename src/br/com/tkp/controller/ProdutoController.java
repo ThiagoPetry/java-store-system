@@ -3,7 +3,7 @@ package br.com.tkp.controller;
 import java.util.List;
 import java.util.Scanner;
 
-import br.com.tkp.model.CarrinhoModel;
+import br.com.tkp.model.PessoaModel;
 import br.com.tkp.model.ProdutoModel;
 
 public class ProdutoController {
@@ -20,7 +20,7 @@ public class ProdutoController {
 	}
 
 	public void menu() {
-		System.out.print("\n======== MENU ========\n1 - Cadastrar itens\n2 - Listar estoque\n3 - Editar item\n4 - Remover item\n5 - Realizar venda\n6 - Carrinho\n7 - Sair\n======================");
+		System.out.print("\n======== MENU ========\n1 - Cadastrar itens\n2 - Listar estoque\n3 - Editar item\n4 - Remover item\n5 - Realizar venda\n6 - Carrinho\n7 - Conta\n8 - Sair\n======================");
 	}
 
 	public ProdutoModel cadastrarProduto() {
@@ -63,7 +63,7 @@ public class ProdutoController {
 			System.out.println("\nNão existe nenhum produto cadastrado.");
 			return null;
 		}
-		
+
 		listarProdutos(produtos);
 
 		System.out.println("\n============= Editar produto =============\n");
@@ -117,77 +117,35 @@ public class ProdutoController {
 		}
 		return null;
 	}
-	
+
 	public void removerProduto(List<ProdutoModel> produtos) {
-		if(produtos.size() <= 0) {
+		if (produtos.size() <= 0) {
 			System.out.print("\nNão existe nenhum produto cadastrado.\n");
 			return;
 		}
-		
+
 		System.out.println("\n============= Remover produto ==============");
-		listarProdutos(produtos);		
-		
+		listarProdutos(produtos);
+
 		System.out.print("\nInforme o ID do produto a ser removido: ");
 		int idDoProduto = tec.nextInt();
-		
-		if(idDoProduto > produtos.size()) {
+
+		if (idDoProduto > produtos.size()) {
 			System.out.println("\nEste produto não existe.");
 			return;
 		}
-		
+
 		produtos.remove(idDoProduto - 1);
 		System.out.print("\nProduto removido com sucesso!");
 	}
-	
-	public void realizarVenda(List<ProdutoModel> produtos, List<CarrinhoModel> produtosCarrinho) {		
-		if(produtos.size() <= 0) {
+
+	public void realizarVenda(List<ProdutoModel> produtos, List<PessoaModel> pessoaModel) {
+		if (produtos.size() <= 0) {
 			System.out.print("\nNão existe nenhum produto cadastrado.\n");
 			return;
 		}
-		
-		System.out.println("\n=============== Realizar venda ================");	
-		CarrinhoModel produtosC = new CarrinhoModel();
+
+		System.out.println("\n=============== Realizar venda ================");
 		listarProdutos(produtos);
-		
-		int idDoProduto, qtdDoProduto;
-		
-		System.out.print("\nInforme o ID do produto a ser comprado: ");
-		idDoProduto = tec.nextInt() - 1;
-		
-		if(idDoProduto > produtos.size()) {
-			System.out.println("\nEste produto não existe.");
-			return;
-		}
-		
-		System.out.print("Informe a quantidade: ");
-		qtdDoProduto = tec.nextInt();
-		
-		if(qtdDoProduto > produtos.get(idDoProduto).getQtdProd()) {
-			System.out.print("\nEstoque insuficiente!");
-			return;
-		}
-		
-		produtosC.setQtdItens(qtdDoProduto);
-		produtosC.setPrecoUnitario(produtos.get(idDoProduto).getPrecoProd());
-		produtosC.setPrecoTotal(produtos.get(idDoProduto).getPrecoProd() * qtdDoProduto);
-		produtosCarrinho.add(produtosC);
-		produtos.get(idDoProduto).setQtdProd(produtos.get(idDoProduto).getQtdProd() - qtdDoProduto);
-		
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
