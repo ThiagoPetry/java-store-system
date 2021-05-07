@@ -3,9 +3,14 @@ package br.com.tkp.view;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.tkp.controller.CarrinhoController;
-import br.com.tkp.controller.PessoaController;
-import br.com.tkp.controller.ProdutoController;
+import br.com.tkp.controller.carrinho.AdicionaItemNoCarrinho;
+import br.com.tkp.controller.carrinho.Carrinho;
+import br.com.tkp.controller.pessoa.AdicionaPessoa;
+import br.com.tkp.controller.produto.CadastraProduto;
+import br.com.tkp.controller.produto.DeletaProduto;
+import br.com.tkp.controller.produto.EditaProduto;
+import br.com.tkp.controller.produto.ListaProduto;
+import br.com.tkp.controller.produto.Produto;
 import br.com.tkp.model.CarrinhoModel;
 import br.com.tkp.model.PessoaModel;
 import br.com.tkp.model.ProdutoModel;
@@ -17,14 +22,21 @@ public class ProgramaPrincipal {
 		List<CarrinhoModel> produtosCarrinho = new ArrayList<CarrinhoModel>();
 		List<PessoaModel> pessoas = new ArrayList<PessoaModel>();
 
-		ProdutoController produtoController = new ProdutoController();
-		CarrinhoController carrinhoController = new CarrinhoController();
-		PessoaController menuController = new PessoaController();
+		Produto produtoController = new Produto();
+		Carrinho carrinhoController = new Carrinho();
+		AdicionaPessoa adicionaPessoa = new AdicionaPessoa();
+		
+		AdicionaItemNoCarrinho addCarrinho = new AdicionaItemNoCarrinho();
+		CadastraProduto cadastraProduto = new CadastraProduto();
+		ListaProduto listaProduto = new ListaProduto();
+		EditaProduto editaProduto = new EditaProduto();
+		DeletaProduto deletaProduto = new DeletaProduto();
+		
 
 		boolean sair = false;
 		int opcao = 0;
-
-		menuController.menuConta(pessoas, produtosCarrinho, produtos);
+		
+		String cliente = adicionaPessoa.definirCliente();
 
 		do {
 			produtoController.menu();
@@ -32,26 +44,25 @@ public class ProgramaPrincipal {
 
 			switch (opcao) {
 			case 1:
-				produtos.add(produtoController.cadastrarProduto());
+				produtos.add(cadastraProduto.cadastrarProduto());
 				break;
 			case 2:
-				produtoController.listarProdutos(produtos);
+				listaProduto.listarProdutos(produtos);
 				break;
 			case 3:
-				produtoController.editarProduto(produtos);
+				editaProduto.editarProduto(produtos);
 				break;
 			case 4:
-				produtoController.removerProduto(produtos);
+				deletaProduto.removerProduto(produtos);
 				break;
 			case 5:
-				carrinhoController.adicionarProdutoCarrinho(produtos, produtosCarrinho);
+				produtosCarrinho.add(addCarrinho.cadastrarProdutoNoCarrinho(produtos));
 				break;
 			case 6:
-				carrinhoController.menuCarrinho(produtos, produtosCarrinho, pessoas);
+				carrinhoController.menuCarrinho(produtos, produtosCarrinho, cliente);
 				break;
 			case 7:
-				menuController.menuConta(pessoas, produtosCarrinho, produtos);
-				;
+				adicionaPessoa.menuConta(pessoas, produtosCarrinho, produtos);
 				break;
 			case 8:
 				sair = true;

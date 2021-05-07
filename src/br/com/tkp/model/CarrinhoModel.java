@@ -2,52 +2,52 @@ package br.com.tkp.model;
 
 public class CarrinhoModel {
 
-	private String nomeProduto;
-	private double precoUnitario;
-	private int qtdItens;
-	private double precoTotal;
+	private int idDoProduto;
+	private int quantidadeDeItensNoCarrinho;
+	private double valorTotalPorItem;
+	private ProdutoModel produtoModel;
 
 	public CarrinhoModel() {
 
 	}
-
-	public CarrinhoModel(String nomeProduto, double precoUnitario, int qtdItens, double precoTotal) {
+	
+	public CarrinhoModel(int idDoProduto, int quantidadeDeItensNoCarrinho, double valorTotalPorItem, ProdutoModel produtoModel) {
 		super();
-		this.nomeProduto = nomeProduto;
-		this.precoUnitario = precoUnitario;
-		this.qtdItens = qtdItens;
-		this.precoTotal = precoTotal;
+		this.idDoProduto = idDoProduto;
+		this.quantidadeDeItensNoCarrinho = quantidadeDeItensNoCarrinho;
+		this.valorTotalPorItem = valorTotalPorItem;
+		this.produtoModel = produtoModel;
 	}
 
-	public double getPrecoUnitario() {
-		return precoUnitario;
+	public int getIdDoProduto() {
+		return idDoProduto;
 	}
-
-	public void setPrecoUnitario(double precoUnitario) {
-		this.precoUnitario = precoUnitario;
+	
+	public void setIdDoProduto(int idDoProduto) {
+		this.idDoProduto = idDoProduto;
 	}
-
-	public int getQtdItens() {
-		return qtdItens;
+	
+	public int getQuantidadeDeItensNoCarrinho() {
+		return quantidadeDeItensNoCarrinho;
 	}
-
-	public void setQtdItens(int qtdItens) {
-		this.qtdItens = qtdItens;
+	
+	public void setQuantidadeDeItensNoCarrinho(int quantidadeDeItensNoCarrinho) {
+		this.quantidadeDeItensNoCarrinho = quantidadeDeItensNoCarrinho;
 	}
-
-	public double getPrecoTotal() {
-		return precoTotal;
+	
+	public double getValorTotalPorItem() {
+		return valorTotalPorItem;
 	}
-
-	public void setPrecoTotal(double precoTotal) {
-		this.precoTotal = precoTotal;
+	
+	public void setValorTotalPorItem(double valorTotalPorItem) {
+		this.valorTotalPorItem = valorTotalPorItem;
 	}
-
-	public String getNomeProduto() {
-		return nomeProduto;
+	
+	public ProdutoModel getProdutoModel() {
+		return produtoModel;
 	}
-
-	public void setNomeProduto(String nomeProduto) {
-		this.nomeProduto = nomeProduto;
+	
+	public void setProdutoModel(ProdutoModel produtoModel) {
+		this.produtoModel = produtoModel;
 	}
 }
