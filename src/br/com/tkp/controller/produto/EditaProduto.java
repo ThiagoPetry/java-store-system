@@ -9,13 +9,13 @@ public class EditaProduto {
 
 	private Scanner tec;
 	ProdutoModel produto = new ProdutoModel();
-	ListaProduto listaProduto = new ListaProduto();
 
 	public EditaProduto() {
 		tec = new Scanner(System.in);
 	}
 
 	public ProdutoModel editarProduto(List<ProdutoModel> produtos) {
+		ListaProduto listaProduto = new ListaProduto();
 		int idDoProduto, indexDoCampo;
 
 		if (produtos.size() <= 0) {
@@ -23,7 +23,7 @@ public class EditaProduto {
 			return null;
 		}
 
-		listaProduto.listarProdutos(produtos);
+		listaProduto.listarProdutos();
 
 		System.out.println("\n============= Editar produto =============\n");
 		System.out.print("Informe o ID do produto: ");

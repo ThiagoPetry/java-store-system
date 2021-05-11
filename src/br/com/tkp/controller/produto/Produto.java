@@ -5,7 +5,6 @@ import java.util.Scanner;
 public class Produto {
 
 	private Scanner tec;
-	ListaProduto listaProduto = new ListaProduto();
 
 	public Produto() {
 		tec = new Scanner(System.in);

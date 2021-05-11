@@ -12,7 +12,6 @@ public class AdicionaItemNoCarrinho {
 
 	private Scanner tec;
 	CarrinhoModel carrinhoModel = new CarrinhoModel();
-	ListaProduto listaProdutos = new ListaProduto();
 	Carrinho carrinhoController = new Carrinho();
 	EditaProduto editaProduto = new EditaProduto();
 
@@ -21,12 +20,13 @@ public class AdicionaItemNoCarrinho {
 	}
 
 	public CarrinhoModel cadastrarProdutoNoCarrinho(List<ProdutoModel> produtos) {
+		ListaProduto listaProdutos = new ListaProduto();
 		if (produtos.size() <= 0) {
 			System.out.print("\nNão existe nenhum produto cadastrado.\n");
 			return null;
 		}
 
-		listaProdutos.listarProdutos(produtos);
+		listaProdutos.listarProdutos();
 
 		System.out.print("\n---- Adicionar Item ----");
 		System.out.print("\nInforme o ID: ");
