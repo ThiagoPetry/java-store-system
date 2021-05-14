@@ -1,36 +1,58 @@
 package br.com.tkp.controller.produto;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.List;
 import java.util.Scanner;
 
+import br.com.dao.DataBaseConnection;
 import br.com.tkp.model.ProdutoModel;
 
 public class EditaProduto {
 
-	private Scanner tec;
-	ProdutoModel produto = new ProdutoModel();
+	private Scanner tec = new Scanner(System.in);
+	private ListaProduto listaProduto;
+	private ProdutoModel produto;
+	private Connection connection;
 
 	public EditaProduto() {
-		tec = new Scanner(System.in);
+		connection = DataBaseConnection.getInstance().getConnection();
 	}
 
-	public ProdutoModel editarProduto(List<ProdutoModel> produtos) {
-		ListaProduto listaProduto = new ListaProduto();
+	public ProdutoModel editarProduto() {
+		PreparedStatement preparedStatement;
+				
+		listaProduto = new ListaProduto();
+		produto = new ProdutoModel();
 		int idDoProduto, indexDoCampo;
 
-		if (produtos.size() <= 0) {
-			System.out.println("\nNão existe nenhum produto cadastrado.");
+		if (listaProduto.listarProdutos() == null) {
 			return null;
 		}
 
-		listaProduto.listarProdutos();
-
-		System.out.println("\n============= Editar produto =============\n");
+		System.out.println("\n--> Editar produto\n");
 		System.out.print("Informe o ID do produto: ");
 		idDoProduto = tec.nextInt();
-
-		if (idDoProduto >= produtos.size()) {
-			System.out.println("\nEste produto não existe.");
+		
+		try {
+			String sql = "SELECT * FROM produto WHERE codigoDoProduto = ?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, idDoProduto);
+			
+			ResultSet resultSet = preparedStatement.executeQuery();			
+			
+			if(!resultSet.next()) {
+				System.out.println("\nEste produto não existe.");
+				return null;
+			} else {
+				produto.setNomeProd(resultSet.getString("nomeDoProduto"));
+				produto.setPrecoProd(resultSet.getDouble("precoDoProduto"));
+				produto.setQtdProd(resultSet.getInt("quantidadeDoProduto"));
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 
@@ -40,63 +62,94 @@ public class EditaProduto {
 
 		switch (indexDoCampo) {
 		case 1:
-			this.editarNomeDoProduto(produtos, idDoProduto);
+			this.editarNomeDoProduto(idDoProduto);
 			break;
 		case 2:
-			this.editarPrecoDoProduto(produtos, idDoProduto);
+			this.editarPrecoDoProduto(idDoProduto);
 			break;
 		case 3:
-			this.editarQuantidadeDoProduto(produtos, idDoProduto);
+			this.editarQuantidadeDoProduto(idDoProduto);
 			break;
-
 		default:
 			System.out.println("\nCampo inválido.");
 			break;
 		}
 		return null;
 	}
-	
-	private ProdutoModel editarNomeDoProduto(List<ProdutoModel> produtos, int idDoProduto) {
+
+	private ProdutoModel editarNomeDoProduto(int idDoProduto) {
+		PreparedStatement preparedStatement;
+		
 		System.out.print("Informe o novo nome do produto: ");
 		produto.setNomeProd(tec.next());
-
-		produto.setPrecoProd(produtos.get(idDoProduto).getPrecoProd());
-		produto.setQtdProd(produtos.get(idDoProduto).getQtdProd());
-		produto.setSaldoEstoque(produtos.get(idDoProduto).getSaldoEstoque());
-
-		produtos.set(idDoProduto, produto);
 		
+		try {
+			String sql = "UPDATE produto SET nomeDoProduto = ? WHERE codigoDoProduto = ?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setString(1, produto.getNomeProd());
+			preparedStatement.setInt(2, idDoProduto);
+			preparedStatement.execute();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+
 		return produto;
 	}
-	
-	private ProdutoModel editarPrecoDoProduto(List<ProdutoModel> produtos, int idDoProduto) {
+
+	private ProdutoModel editarPrecoDoProduto(int idDoProduto) {
+		PreparedStatement preparedStatement;
+		
 		System.out.print("Informe o novo preço do produto: ");
 		produto.setPrecoProd(tec.nextDouble());
-
-		produto.setNomeProd(produtos.get(idDoProduto).getNomeProd());
-		produto.setQtdProd(produtos.get(idDoProduto).getQtdProd());
-		produto.setSaldoEstoque(produtos.get(idDoProduto).getQtdProd() * produto.getPrecoProd());
-
-		produtos.set(idDoProduto, produto);
 		
+		produto.setSaldoEstoque(produto.getPrecoProd() * produto.getQtdProd());
+		
+		try {
+			String sql = "UPDATE produto SET precoDoProduto = ?, saldoEmEstoque = ? WHERE codigoDoProduto = ?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setDouble(1, produto.getPrecoProd());
+			preparedStatement.setDouble(2, produto.getSaldoEstoque());
+			preparedStatement.setInt(3, idDoProduto);
+			preparedStatement.execute();
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+
 		return produto;
 	}
-	
-	private ProdutoModel editarQuantidadeDoProduto(List<ProdutoModel> produtos, int idDoProduto) {
+
+	private ProdutoModel editarQuantidadeDoProduto(int idDoProduto) {
+		PreparedStatement preparedStatement;
+		
 		System.out.print("Informe a nova quantidade do produto: ");
 		produto.setQtdProd(tec.nextInt());
-
-		produto.setPrecoProd(produtos.get(idDoProduto).getPrecoProd());
-		produto.setNomeProd(produtos.get(idDoProduto).getNomeProd());
-		produto.setSaldoEstoque(produtos.get(idDoProduto).getPrecoProd() * produto.getQtdProd());
-
-		produtos.set(idDoProduto, produto);
 		
+		produto.setSaldoEstoque(produto.getPrecoProd() * produto.getQtdProd());
+		
+		try {
+			String sql = "UPDATE produto SET quantidadeDoProduto = ?, saldoEmEstoque = ? WHERE codigoDoProduto = ?";
+			preparedStatement = connection.prepareStatement(sql);
+			
+			preparedStatement.setInt(1, produto.getQtdProd());
+			preparedStatement.setDouble(2, produto.getSaldoEstoque());
+			preparedStatement.setInt(3, idDoProduto);
+			
+			preparedStatement.execute();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+
 		return produto;
 	}
 
 	public List<ProdutoModel> atualizarQuantidadeValorTotal(List<ProdutoModel> produtos, int quantidade, int idDoProduto) {
-
 		produto.setQtdProd(produtos.get(idDoProduto).getQtdProd() - quantidade);
 		produto.setSaldoEstoque(produtos.get(idDoProduto).getPrecoProd() * produto.getQtdProd());
 		produto.setNomeProd(produtos.get(idDoProduto).getNomeProd());
