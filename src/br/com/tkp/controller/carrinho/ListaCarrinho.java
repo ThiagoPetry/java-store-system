@@ -1,35 +1,59 @@
 package br.com.tkp.controller.carrinho;
 
-import java.util.List;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
-import br.com.tkp.model.CarrinhoModel;
+import br.com.dao.DataBaseConnection;
 
 public class ListaCarrinho {
-	public List<CarrinhoModel> carrinho(List<CarrinhoModel> produtosCarrinho) {
-		System.out.println("\n==================== Carrinho ===================");
-		System.out.printf("| %2s | %10s | %8s | %4s | %9s |\n", "ID", "Nome", "Valor", "Qtd", "Total");
-		System.out.printf("=================================================\n");
+	
+	private Connection connection;
 
-		produtosCarrinho.forEach(item -> {
-			System.out.printf("| %2s | %10s | R$%6.2f | %4s | R$%7.2f |\n", produtosCarrinho.indexOf(item),
-					item.getProdutoModel().getNomeProd(), item.getProdutoModel().getPrecoProd(),
-					item.getQuantidadeDeItensNoCarrinho(), item.getValorTotalPorItem());
-		});
+	public ListaCarrinho() {
+		connection = DataBaseConnection.getInstance().getConnection();
+	}
+	
+	public ResultSet carrinho(String cliente) {
+		PreparedStatement preparedStatement;
 
-		double valorTotalDoCarrinho = produtosCarrinho.stream().mapToDouble(item -> item.getValorTotalPorItem()).sum();
-
-		System.out.printf("=================================================\n");
-		System.out.println("Valor total: R$" + valorTotalDoCarrinho);
-
-		return produtosCarrinho;
+		try {			
+			String sql = "SELECT * FROM carrinho WHERE nomeDoUsuario = ?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setString(1, cliente);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			
+			if(!resultSet.next()) {
+				System.out.print("\nNão possui dados no carrinho.\n");
+				return null;
+			}
+			
+			System.out.println("\n=============== Produtos no Carrinho ===============");
+			System.out.printf("| %2s | %9s | %12s | %4s | %9s |\n", "ID", "ID Pro.", "Produto", "Qtd", "R$ total");
+			System.out.println("====================================================");
+			
+			resultSet.previous();
+			
+			while(resultSet.next()) {
+				System.out.printf("| %2s | %9s | %12s | %4s | %9s |\n",
+						resultSet.getInt("codigo"), 
+						resultSet.getInt("codigoDoProduto"), 
+						resultSet.getString("nomeDoProduto"), 
+						resultSet.getInt("quantidadeDoProduto"),
+						resultSet.getDouble("valorTotal"));
+			}
+			return resultSet;
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
-	public void gerarCupom(List<CarrinhoModel> itensnDoCarrinho, String cliente) {
-		if (itensnDoCarrinho.size() <= 0) {
-			System.out.print("\nLista vazia.");
-			return;
-		}
-		carrinho(itensnDoCarrinho);
+	public void gerarCupom(String cliente) {
+//		if (itensnDoCarrinho.size() <= 0) {
+//			System.out.print("\nLista vazia.");
+//			return;
+//		}
+		carrinho(cliente);
 		System.out.println("Cliente " + cliente);
 	}
 }
