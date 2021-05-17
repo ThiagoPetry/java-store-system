@@ -1,38 +1,67 @@
 package br.com.tkp.controller.produto;
 
-import java.util.List;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.Scanner;
 
-import br.com.tkp.model.ProdutoModel;
+import br.com.dao.DataBaseConnection;
 
 public class DeletaProduto {
 
-	private Scanner tec;
+	private ListaProduto listaProduto;
+	private Scanner tec = new Scanner(System.in);
+	private Connection connection;
 
 	public DeletaProduto() {
-		tec = new Scanner(System.in);
+		connection = DataBaseConnection.getInstance().getConnection();
+	}
+	
+	public boolean verificaSeExisteProduto(int idDoProduto) {
+		PreparedStatement preparedStatement;
+		try {
+			String sql = "SELECT * FROM produto WHERE codigoDoProduto = ?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, idDoProduto);
+			
+			ResultSet resultSet = preparedStatement.executeQuery();
+			
+			if(!resultSet.next()) {
+				System.out.println("Este produto não existe.");
+				return false;
+			} else {
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 
-	public void removerProduto(List<ProdutoModel> produtos) {
-		ListaProduto listaProduto = new ListaProduto();
-		if (produtos.size() <= 0) {
-			System.out.print("\nNão existe nenhum produto cadastrado.\n");
+	public void removerProduto() {
+		PreparedStatement preparedStatement;
+		listaProduto = new ListaProduto();
+
+		if (listaProduto.listarProdutos() == null) {
 			return;
 		}
 
-		System.out.println("\n============= Remover produto ==============");
-		listaProduto.listarProdutos();
-
+		System.out.println("\n=============== Remover produto ================");
 		System.out.print("\nInforme o ID do produto a ser removido: ");
 		int idDoProduto = tec.nextInt();
-
-		if (idDoProduto > produtos.size()) {
-			System.out.println("\nEste produto não existe.");
+		
+		try {
+			if(!verificaSeExisteProduto(idDoProduto)) {
+				return;
+			}
+			String sql = "DELETE FROM produto WHERE codigoDoProduto = ?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, idDoProduto);
+			preparedStatement.execute();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Não foi possível excluir essa informação.");
 			return;
-		}
-
-		produtos.remove(idDoProduto);
-		System.out.print("\nProduto removido com sucesso!");
+		}	
 	}
-
 }
