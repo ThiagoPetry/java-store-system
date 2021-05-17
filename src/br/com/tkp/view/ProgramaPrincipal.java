@@ -1,8 +1,5 @@
 package br.com.tkp.view;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import br.com.tkp.controller.carrinho.AdicionaItemNoCarrinho;
 import br.com.tkp.controller.carrinho.Carrinho;
 import br.com.tkp.controller.pessoa.AdicionaPessoa;
@@ -11,17 +8,10 @@ import br.com.tkp.controller.produto.DeletaProduto;
 import br.com.tkp.controller.produto.EditaProduto;
 import br.com.tkp.controller.produto.ListaProduto;
 import br.com.tkp.controller.produto.Produto;
-import br.com.tkp.model.CarrinhoModel;
-import br.com.tkp.model.PessoaModel;
-import br.com.tkp.model.ProdutoModel;
 
 public class ProgramaPrincipal {
 
 	public static void main(String[] args) {
-		List<ProdutoModel> produtos = new ArrayList<ProdutoModel>();
-		List<CarrinhoModel> produtosCarrinho = new ArrayList<CarrinhoModel>();
-		List<PessoaModel> pessoas = new ArrayList<PessoaModel>();
-
 		Produto produtoController = new Produto();
 		Carrinho carrinhoController = new Carrinho();
 		AdicionaPessoa adicionaPessoa = new AdicionaPessoa();
@@ -36,8 +26,9 @@ public class ProgramaPrincipal {
 		boolean sair = false;
 		int opcao = 0;
 		
-		String cliente = adicionaPessoa.definirCliente();
-
+		String cliente = null;
+		while(cliente == null) {cliente = adicionaPessoa.definirCliente();}
+		
 		do {
 			produtoController.menu();
 			opcao = produtoController.opcao();
@@ -53,16 +44,16 @@ public class ProgramaPrincipal {
 				editaProduto.editarProduto();
 				break;
 			case 4:
-				deletaProduto.removerProduto(produtos);
+				deletaProduto.removerProduto();
 				break;
 			case 5:
-				produtosCarrinho.add(addCarrinho.cadastrarProdutoNoCarrinho(produtos));
+				addCarrinho.cadastrarProdutoNoCarrinho(cliente);
 				break;
 			case 6:
-				carrinhoController.menuCarrinho(produtos, produtosCarrinho, cliente);
+				carrinhoController.menuCarrinho(cliente);
 				break;
 			case 7:
-				adicionaPessoa.menuConta(pessoas, produtosCarrinho, produtos);
+				cliente = adicionaPessoa.definirCliente();
 				break;
 			case 8:
 				sair = true;
