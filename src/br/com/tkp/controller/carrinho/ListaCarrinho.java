@@ -49,11 +49,36 @@ public class ListaCarrinho {
 	}
 
 	public void gerarCupom(String cliente) {
-//		if (itensnDoCarrinho.size() <= 0) {
-//			System.out.print("\nLista vazia.");
-//			return;
-//		}
-		carrinho(cliente);
-		System.out.println("Cliente " + cliente);
+		PreparedStatement preparedStatement;
+		
+		try {
+			System.out.println("\nCOMPRA FINALIZADA! Cliente: " + cliente);
+			carrinho(cliente);
+			
+			String sql = "DELETE FROM carrinho WHERE nomeDoUsuario = ?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setString(1, cliente);
+			preparedStatement.execute();			
+			
+		} catch (Exception e) {
+			System.out.println("\nNão foi possível finalizar a compra.");
+			return;
+		}
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

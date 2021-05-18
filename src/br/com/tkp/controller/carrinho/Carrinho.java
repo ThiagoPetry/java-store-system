@@ -29,7 +29,7 @@ public class Carrinho {
 			listaCarrinho.gerarCupom(cliente);
 			break;
 		case 2:
-			removeProduto.removerProdutoCarrinho();
+			removeProduto.removerProdutoCarrinho(cliente);
 			break;
 		case 3:
 			break;
