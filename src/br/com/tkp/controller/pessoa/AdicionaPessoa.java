@@ -18,28 +18,29 @@ public class AdicionaPessoa {
 		connection = DataBaseConnection.getInstance().getConnection();
 	}
 
-	public String definirCliente() {
+	public int definirCliente() {
 		PreparedStatement preparedStatement;
-		
+		String nome, sql;
+
 		try {
 			System.out.print("\nInforme o nome do cliente: ");
-			String nome = tec.next();
-			
-			String sql = "SELECT * FROM usuario WHERE nome = ?";
+			nome = tec.next();
+
+			sql = "SELECT * FROM usuario WHERE nome = ?";
 			preparedStatement = connection.prepareStatement(sql);
 			preparedStatement.setString(1, nome);
+
 			ResultSet resultSet = preparedStatement.executeQuery();
-			
-			if(!resultSet.next()) {
+
+			if (!resultSet.next()) {
 				System.out.println("\nUsuário inválido!");
-				return null;
+				return -1;
 			} else {
-				return nome;
-			}			
+				return resultSet.getInt("codigo");
+			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("Não foi possível se conectar.");
-			return null;
+			System.out.println("\nNão foi possível se conectar.");
+			return -1;
 		}
 	}
 }
