@@ -14,17 +14,22 @@ public class ListaCarrinho {
 		connection = DataBaseConnection.getInstance().getConnection();
 	}
 	
-	public ResultSet carrinho(String cliente) {
+	public ResultSet carrinho(int cliente) {
 		PreparedStatement preparedStatement;
-
+		double valorTotal = 0;
+		
 		try {			
-			String sql = "SELECT * FROM carrinho WHERE nomeDoUsuario = ?";
+			String sql = "SELECT carrinho.codigo, carrinho.codigoDoProduto, produto.nomeDoProduto, "
+					+ "carrinho.quantidadeDoProduto, (carrinho.quantidadeDoProduto * produto.precoDoProduto) as Total "
+					+ "FROM carrinho INNER JOIN produto ON carrinho.codigoDoProduto = produto.codigoDoProduto "
+					+ "WHERE carrinho.codigoDoUsuario = ?";
+			
 			preparedStatement = connection.prepareStatement(sql);
-			preparedStatement.setString(1, cliente);
+			preparedStatement.setInt(1, cliente);
 			ResultSet resultSet = preparedStatement.executeQuery();
 			
 			if(!resultSet.next()) {
-				System.out.print("\nNão possui dados no carrinho.\n");
+				System.out.print("\nVocê não possui nenhum produto no carrinho.\n");
 				return null;
 			}
 			
@@ -32,53 +37,22 @@ public class ListaCarrinho {
 			System.out.printf("| %2s | %9s | %12s | %4s | %9s |\n", "ID", "ID Pro.", "Produto", "Qtd", "R$ total");
 			System.out.println("====================================================");
 			
-			resultSet.previous();
-			
+			resultSet.previous();		
 			while(resultSet.next()) {
+				valorTotal += resultSet.getDouble("total");
 				System.out.printf("| %2s | %9s | %12s | %4s | %9s |\n",
 						resultSet.getInt("codigo"), 
 						resultSet.getInt("codigoDoProduto"), 
 						resultSet.getString("nomeDoProduto"), 
 						resultSet.getInt("quantidadeDoProduto"),
-						resultSet.getDouble("valorTotal"));
+						resultSet.getDouble("total"));
 			}
+			System.out.println("====================================================");
+			System.out.println("VALOR TOTAL: " + valorTotal);
 			return resultSet;
 		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 	}
-
-	public void gerarCupom(String cliente) {
-		PreparedStatement preparedStatement;
-		
-		try {
-			System.out.println("\nCOMPRA FINALIZADA! Cliente: " + cliente);
-			carrinho(cliente);
-			
-			String sql = "DELETE FROM carrinho WHERE nomeDoUsuario = ?";
-			preparedStatement = connection.prepareStatement(sql);
-			preparedStatement.setString(1, cliente);
-			preparedStatement.execute();			
-			
-		} catch (Exception e) {
-			System.out.println("\nNão foi possível finalizar a compra.");
-			return;
-		}
-	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
