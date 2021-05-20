@@ -34,7 +34,6 @@ public class RemoveProduto {
 			String sql_atualiza = "UPDATE produto SET quantidadeDoProduto = quantidadeDoProduto + "
 					+ "(SELECT quantidadeDoProduto FROM carrinho WHERE codigoDoProduto = ? AND codigoDoUsuario = ?), "
 					+ "saldoEmEstoque = quantidadeDoProduto * precoDoProduto WHERE codigoDoProduto = ?;";
-
 			preparedStatementAtu = connection.prepareStatement(sql_atualiza);
 			preparedStatementAtu.setInt(1, idDoProduto);
 			preparedStatementAtu.setInt(2, cliente);
@@ -43,7 +42,6 @@ public class RemoveProduto {
 
 			// Remove o produto do carrinho
 			String sql_delete = "DELETE FROM carrinho WHERE codigoDoProduto = ? AND codigoDoUsuario = ?";
-
 			preparedStatementDel = connection.prepareStatement(sql_delete);
 			preparedStatementDel.setInt(1, idDoProduto);
 			preparedStatementDel.setInt(2, cliente);
