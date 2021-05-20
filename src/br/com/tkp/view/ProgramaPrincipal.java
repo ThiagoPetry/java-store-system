@@ -22,12 +22,13 @@ public class ProgramaPrincipal {
 		EditaProduto editaProduto = new EditaProduto();
 		DeletaProduto deletaProduto = new DeletaProduto();
 		
-
 		boolean sair = false;
-		int opcao = 0;
+		int opcao = 0;	
+		int cliente = -1;
 		
-		String cliente = null;
-		while(cliente == null) {cliente = adicionaPessoa.definirCliente();}
+		while(cliente == -1) {
+			cliente = adicionaPessoa.definirCliente();
+		}
 		
 		do {
 			produtoController.menu();
