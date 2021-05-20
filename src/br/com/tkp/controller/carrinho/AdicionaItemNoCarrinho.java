@@ -25,7 +25,7 @@ public class AdicionaItemNoCarrinho {
 	}
 
 	public void cadastrarProdutoNoCarrinho(int cliente) {
-		PreparedStatement preparedStatement;
+		PreparedStatement preparedStatement, preparedStatementAtu;
 		listaProduto = new ListaProduto();
 		int idDoProduto, quantidadeNoCarrinho;
 
@@ -36,7 +36,6 @@ public class AdicionaItemNoCarrinho {
 		System.out.print("\n---- Adicionar Item ----\nInforme o ID: ");
 		carrinhoModel.setIdDoProduto(tec.nextInt());
 		idDoProduto = carrinhoModel.getIdDoProduto();
-
 		System.out.print("Informa a quantidade desejada: ");
 		carrinhoModel.setQuantidadeDeItensNoCarrinho(tec.nextInt());
 		quantidadeNoCarrinho = carrinhoModel.getQuantidadeDeItensNoCarrinho();
@@ -46,29 +45,27 @@ public class AdicionaItemNoCarrinho {
 			preparedStatement = connection.prepareStatement(sql_procura);
 			preparedStatement.setInt(1, idDoProduto);
 			ResultSet resultSet = preparedStatement.executeQuery();
-
+			
 			if (!resultSet.next()) {
 				System.out.print("\nEste produto não existe.\n");
 				return;
-			} else {
-				String sql = "INSERT INTO carrinho (codigoDoUsuario, codigoDoProduto, quantidadeDoProduto) VALUES(?, ?, ?)";
-				preparedStatement = connection.prepareStatement(sql);	
+			} else {			
+				String sql_insere = "INSERT INTO carrinho (codigoDoUsuario, codigoDoProduto, quantidadeDoProduto) VALUES(?, ?, ?)";
+				preparedStatement = connection.prepareStatement(sql_insere);	
 				preparedStatement.setInt(1, cliente);
 				preparedStatement.setInt(2, idDoProduto);
 				preparedStatement.setInt(3, quantidadeNoCarrinho);
 				preparedStatement.execute();
-
-				// Atualiza a tabela produto (quantidade e saldo total) de acordo com o produto selecionado
-				int atualizaQuantidade = resultSet.getInt("quantidadeDoProduto") - quantidadeNoCarrinho;
-				double atualizaSaldoTotal = atualizaQuantidade * resultSet.getDouble("precoDoProduto");
-
-				String sql_atualiza = "UPDATE produto SET quantidadeDoProduto = ?, saldoEmEstoque = ? WHERE codigoDoProduto = ?";
-				preparedStatement = connection.prepareStatement(sql_atualiza);
-				preparedStatement.setInt(1, atualizaQuantidade);
-				preparedStatement.setDouble(2, atualizaSaldoTotal);
-				preparedStatement.setInt(3, idDoProduto);
-
-				preparedStatement.execute();
+				
+				// Atualiza a tabela produto
+				String sql_atualiza = "UPDATE produto SET quantidadeDoProduto = quantidadeDoProduto - "
+						+ "(SELECT quantidadeDoProduto FROM carrinho WHERE codigoDoProduto = ? AND codigoDoUsuario = ?), "
+						+ "saldoEmEstoque = quantidadeDoProduto * precoDoProduto WHERE codigoDoProduto = ?;";
+				preparedStatementAtu = connection.prepareStatement(sql_atualiza);
+				preparedStatementAtu.setInt(1, idDoProduto);
+				preparedStatementAtu.setInt(2, cliente);
+				preparedStatementAtu.setInt(3, idDoProduto);
+				preparedStatementAtu.execute();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
