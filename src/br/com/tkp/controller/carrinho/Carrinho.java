@@ -5,6 +5,7 @@ import java.util.Scanner;
 public class Carrinho {
 
 	private Scanner tec;
+	GeraCupom geraCupom = new GeraCupom();
 	ListaCarrinho listaCarrinho = new ListaCarrinho();
 	RemoveProduto removeProduto = new RemoveProduto();
 
@@ -12,7 +13,7 @@ public class Carrinho {
 		tec = new Scanner(System.in);
 	}
 
-	public void menuCarrinho(String cliente) {
+	public void menuCarrinho(int cliente) {
 		listaCarrinho.carrinho(cliente);
 
 		System.out.print("\n"
@@ -26,7 +27,7 @@ public class Carrinho {
 
 		switch (opc) {
 		case 1:
-			listaCarrinho.gerarCupom(cliente);
+			geraCupom.gerarCupom(cliente);
 			break;
 		case 2:
 			removeProduto.removerProdutoCarrinho(cliente);
@@ -37,6 +38,5 @@ public class Carrinho {
 			System.out.print("\nOpção inválida!");
 			break;
 		}
-
 	}
 }
