@@ -54,7 +54,8 @@ public class ProgramaPrincipal {
 				carrinhoController.menuCarrinho(cliente);
 				break;
 			case 7:
-				cliente = adicionaPessoa.definirCliente();
+				cliente = -1;
+				while(cliente == -1) {cliente = adicionaPessoa.definirCliente();}
 				break;
 			case 8:
 				sair = true;
