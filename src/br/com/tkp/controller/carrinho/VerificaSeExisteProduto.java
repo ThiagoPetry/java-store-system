@@ -14,12 +14,13 @@ public class VerificaSeExisteProduto {
 		connection = DataBaseConnection.getInstance().getConnection();
 	}
 
-	public boolean procurarPeloProduto(int idDoProduto) {
+	public boolean procurarPeloProduto(int idDoProduto, int cliente) {
 		PreparedStatement preparedStatement;
 		try {
-			String sql = "SELECT * FROM carrinho WHERE codigoDoProduto = ?";
+			String sql = "SELECT * FROM carrinho WHERE codigoDoProduto = ? AND codigoDoUsuario = ?";
 			preparedStatement = connection.prepareStatement(sql);
 			preparedStatement.setInt(1, idDoProduto);
+			preparedStatement.setInt(2, cliente);
 
 			ResultSet resultSet = preparedStatement.executeQuery();
 
