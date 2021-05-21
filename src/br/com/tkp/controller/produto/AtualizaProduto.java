@@ -20,7 +20,7 @@ public class AtualizaProduto {
 		verificaSeExisteProduto = new VerificaSeExisteProduto();
 
 		try {
-			if (verificaSeExisteProduto.procurarPeloProduto(idDoProduto) == false) {
+			if (verificaSeExisteProduto.procurarPeloProduto(idDoProduto, cliente) == false) {
 				return;
 			}
 
