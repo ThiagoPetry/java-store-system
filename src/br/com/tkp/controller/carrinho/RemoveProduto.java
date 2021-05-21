@@ -26,7 +26,7 @@ public class RemoveProduto {
 		idDoProduto = tec.nextInt();
 
 		try {
-			if (verificaSeExisteProduto.procurarPeloProduto(idDoProduto) == false) {
+			if (!verificaSeExisteProduto.procurarPeloProduto(idDoProduto, cliente)) {
 				return;
 			}
 
