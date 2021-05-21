@@ -27,5 +27,4 @@ public class DataBaseConnection {
 	public Connection getConnection() {
 		return connection;
 	}
-
 }
