@@ -25,7 +25,7 @@ public class VerificaSeExisteProduto {
 			ResultSet resultSet = preparedStatement.executeQuery();
 
 			if (!resultSet.next()) {
-				System.out.println("Este produto não existe no carrinho.");
+				//System.out.println("Este produto não existe no carrinho.");
 				return false;
 			} else {
 				return true;
